@@ -1,0 +1,73 @@
+name: reservation-system
+
+services:
+  inventory-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: inventory
+      POSTGRES_USER: inventory
+      POSTGRES_PASSWORD: inventory
+      TZ: UTC
+    ports:
+      - "5433:5432"          # host 5433 to dodge a local Postgres on 5432
+    volumes:
+      - inventory-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inventory -d inventory"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+  reservation-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: reservation
+      POSTGRES_USER: reservation
+      POSTGRES_PASSWORD: reservation
+      TZ: UTC
+    ports:
+      - "5434:5432"
+    volumes:
+      - reservation-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U reservation -d reservation"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+  inventory-service:
+    build:
+      context: .
+      dockerfile: inventory-service/Dockerfile
+    depends_on:
+      inventory-db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://inventory-db:5432/inventory
+      SPRING_DATASOURCE_USERNAME: inventory
+      SPRING_DATASOURCE_PASSWORD: inventory
+      TZ: UTC
+    ports:
+      - "8081:8080"
+
+#  reservation-service:
+#    build:
+#      context: .
+#      dockerfile: reservation-service/Dockerfile
+#    depends_on:
+#      reservation-db:
+#        condition: service_healthy
+#      inventory-service:
+#        condition: service_started
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://reservation-db:5432/reservation
+#      SPRING_DATASOURCE_USERNAME: reservation
+#      SPRING_DATASOURCE_PASSWORD: reservation
+#      INVENTORY_BASE_URL: http://inventory-service:8080
+#      TZ: UTC
+#    ports:
+#      - "8082:8080"
+
+volumes:
+  inventory-data:
+  reservation-data:
