@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Entity
-@Table(name = "holds")
+@Table(name = "hold")
 public class Hold {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "hold_seq")

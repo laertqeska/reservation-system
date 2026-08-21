@@ -25,8 +25,6 @@ public class InventoryItem {
     @Column(nullable = false)
     private int available;
 
-    @Version
-    private Long version;
 
     @Column(name = "created_at",nullable = false,updatable = false)
     private Instant createdAt;
@@ -62,10 +60,6 @@ public class InventoryItem {
 
     public int getAvailable() {
         return available;
-    }
-
-    public Long getVersion() {
-        return version;
     }
 
     public Instant getCreatedAt() {
