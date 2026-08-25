@@ -69,12 +69,4 @@ public class InventoryItem {
     public Instant getUpdatedAt() {
         return updatedAt;
     }
-
-    public void hold(int quantity, Clock clock){
-        if(available >= quantity){
-            available -= quantity;
-            this.updatedAt = Instant.now(clock);
-        }
-        else throw new InsufficientInventoryException("Not enough available");
-    }
 }

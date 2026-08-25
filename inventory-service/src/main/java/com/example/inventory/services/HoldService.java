@@ -4,6 +4,7 @@ import com.example.inventory.dto.CreateHoldRequest;
 import com.example.inventory.dto.CreateHoldResponse;
 import com.example.inventory.entities.Hold;
 import com.example.inventory.entities.InventoryItem;
+import com.example.inventory.exceptions.InsufficientInventoryException;
 import com.example.inventory.exceptions.NotFoundException;
 import com.example.inventory.repositories.HoldRepository;
 import com.example.inventory.repositories.InventoryRepository;
@@ -34,9 +35,13 @@ public class HoldService {
         if(existingHold.isPresent()){
             return toResponse(existingHold.get());
         }
-        InventoryItem item = inventoryRepository.findById(request.itemId()).orElseThrow(() -> new NotFoundException("Inventory item not found for id: " + request.itemId()));
-        item.hold(request.qty(),clock);
-        inventoryRepository.save(item);
+        if(!inventoryRepository.existsById(request.itemId())){
+            throw new NotFoundException("Inventory item not found for id: " + request.itemId());
+        }
+        int affected = inventoryRepository.tryReserve(request.itemId(),request.qty());
+        if(affected == 0){
+            throw new InsufficientInventoryException("Not enough available stock");
+        }
         Hold hold = new Hold(
                 request.itemId(),request.qty(),request.holdKey(), Instant.now(clock)
         );

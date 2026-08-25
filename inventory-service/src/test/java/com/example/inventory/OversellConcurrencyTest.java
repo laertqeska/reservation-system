@@ -77,10 +77,10 @@ public class OversellConcurrencyTest {
                 try{
                     startGun.await(); // all threads wait here
 
-                    ResponseEntity<CreateHoldResponse> response = http.postForEntity(
+                    ResponseEntity<String> response = http.postForEntity(
                             "/holds",
                             new CreateHoldRequest(itemId,1, UUID.randomUUID().toString()),
-                            CreateHoldResponse.class
+                            String.class
                     );
 
                     switch (response.getStatusCode().value()){
