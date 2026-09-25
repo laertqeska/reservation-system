@@ -25,17 +25,23 @@ jobs:
 
       - name: Wait for services to be healthy
         run: |
-          set -e
           for i in $(seq 1 60); do
-            if curl -sf http://localhost:8081/actuator/health > /dev/null \
-               && curl -sf http://localhost:8082/actuator/health > /dev/null; then
-              echo "Both services are up."
+            inv=$(curl -s -o /dev/null -w "%{http_code}" \
+                    --connect-timeout 2 --max-time 5 \
+                    http://localhost:8081/actuator/health || echo "000")
+            res=$(curl -s -o /dev/null -w "%{http_code}" \
+                    --connect-timeout 2 --max-time 5 \
+                    http://localhost:8082/actuator/health || echo "000")
+            echo "Attempt $i: inventory=$inv reservation=$res"
+            if [ "$inv" = "200" ] && [ "$res" = "200" ]; then
+              echo "Both services are healthy."
               exit 0
             fi
-            echo "Attempt $i: not ready yet, waiting..."
             sleep 3
           done
-          echo "Services did not become healthy within 3 minutes."
+          echo "Timed out. Container state and logs follow."
+          docker compose ps
+          docker compose logs --no-color --tail=200
           exit 1
 
       - name: Smoke test — create item, then create reservation
