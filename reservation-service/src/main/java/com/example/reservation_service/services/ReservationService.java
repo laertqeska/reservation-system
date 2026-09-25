@@ -9,10 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import com.example.reservation_service.repositories.ReservationRepository;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ReservationService {
@@ -33,18 +35,24 @@ public class ReservationService {
         if(existingReservation.isPresent()){
             return toResponse(existingReservation.get());
         }
+
         Reservation reservation = new Reservation(
                 request.itemId(),
                 request.qty(),
                 idempotencyKey
         );
         reservationRepository.save(reservation);
+
+        String holdKey = UUID.nameUUIDFromBytes(
+                idempotencyKey.getBytes(StandardCharsets.UTF_8)
+        ).toString();
+
         HoldOutcome holdOutcome = restClient.post()
                 .uri("/holds")
                 .body(new HoldRequest(
                         request.itemId(),
                         request.qty(),
-                        idempotencyKey
+                        holdKey
                 ))
                 .exchange((req,res) -> {
                             int status = res.getStatusCode().value();
@@ -57,7 +65,7 @@ public class ReservationService {
                             if(status == 404){
                                 return new HoldOutcome.ItemNotFound();
                             }
-                            return new HoldOutcome.Error(status);
+                            return new HoldOutcome.Error(status,res.bodyTo(String.class));
                 });
 
         return switch (holdOutcome) {
