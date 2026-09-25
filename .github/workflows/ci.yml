@@ -41,18 +41,33 @@ jobs:
       - name: Smoke test — create item, then create reservation
         run: |
           set -e
-          echo "== Creating inventory item =="
-          curl -sf -X POST http://localhost:8081/items \
-            -H 'Content-Type: application/json' \
-            -d '{"name":"CI Widget","qty":10}'
-          echo
 
-          echo "== Creating reservation =="
-          curl -sf -X POST http://localhost:8082/reservations \
+          echo "== POST /items =="
+          inv_status=$(curl -s -o /tmp/item.json -w "%{http_code}" \
+            -X POST http://localhost:8081/items \
+            -H 'Content-Type: application/json' \
+            -d '{"sku":"CI-WIDGET","total":10,"available":8}')
+          echo "HTTP $inv_status"
+          cat /tmp/item.json
+          echo
+          if [ "$inv_status" != "201" ] && [ "$inv_status" != "200" ]; then
+            echo "Item creation failed."
+            exit 1
+          fi
+
+          echo "== POST /reservations =="
+          res_status=$(curl -s -o /tmp/res.json -w "%{http_code}" \
+            -X POST http://localhost:8082/reservations \
             -H 'Content-Type: application/json' \
             -H 'Idempotency-Key: ci-smoke-1' \
-            -d '{"itemId":1,"qty":2}'
+            -d '{"itemId":1,"qty":2}')
+          echo "HTTP $res_status"
+          cat /tmp/res.json
           echo
+          if [ "$res_status" != "201" ]; then
+            echo "Reservation creation failed."
+            exit 1
+          fi
 
           echo "== Smoke test passed =="
 
