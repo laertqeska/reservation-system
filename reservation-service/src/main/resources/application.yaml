@@ -3,9 +3,9 @@ spring:
     name: reservation-service
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5434/reservation}
-    username: ${SPRING_DATASOURCE_USERNAME:reservation}
-    password: ${SPRING_DATASOURCE_PASSWORD:reservation}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/reservation}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:Luna1978!}
     hikari:
       pool-name: reservation-pool
       maximum-pool-size: 10

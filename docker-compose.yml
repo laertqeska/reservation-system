@@ -43,6 +43,7 @@ services:
       inventory-db:
         condition: service_healthy
     environment:
+      SERVER_PORT: 8080
       SPRING_DATASOURCE_URL: jdbc:postgresql://inventory-db:5432/inventory
       SPRING_DATASOURCE_USERNAME: inventory
       SPRING_DATASOURCE_PASSWORD: inventory
@@ -50,23 +51,24 @@ services:
     ports:
       - "8081:8080"
 
-#  reservation-service:
-#    build:
-#      context: .
-#      dockerfile: reservation-service/Dockerfile
-#    depends_on:
-#      reservation-db:
-#        condition: service_healthy
-#      inventory-service:
-#        condition: service_started
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://reservation-db:5432/reservation
-#      SPRING_DATASOURCE_USERNAME: reservation
-#      SPRING_DATASOURCE_PASSWORD: reservation
-#      INVENTORY_BASE_URL: http://inventory-service:8080
-#      TZ: UTC
-#    ports:
-#      - "8082:8080"
+  reservation-service:
+    build:
+      context: .
+      dockerfile: reservation-service/Dockerfile
+    depends_on:
+      reservation-db:
+        condition: service_healthy
+      inventory-service:
+        condition: service_started
+    environment:
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: jdbc:postgresql://reservation-db:5432/reservation
+      SPRING_DATASOURCE_USERNAME: reservation
+      SPRING_DATASOURCE_PASSWORD: reservation
+      INVENTORY_BASE_URL: http://inventory-service:8080
+      TZ: UTC
+    ports:
+      - "8082:8080"
 
 volumes:
   inventory-data:

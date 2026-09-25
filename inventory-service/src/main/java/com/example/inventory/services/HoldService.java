@@ -3,7 +3,6 @@ package com.example.inventory.services;
 import com.example.inventory.dto.CreateHoldRequest;
 import com.example.inventory.dto.CreateHoldResponse;
 import com.example.inventory.entities.Hold;
-import com.example.inventory.entities.InventoryItem;
 import com.example.inventory.exceptions.InsufficientInventoryException;
 import com.example.inventory.exceptions.NotFoundException;
 import com.example.inventory.repositories.HoldRepository;
