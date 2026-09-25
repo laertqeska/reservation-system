@@ -4,8 +4,8 @@ spring:
 
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/inventory}
-    username: ${SPRING_DATASOURCE_USERNAME:reservation}
-    password: ${SPRING_DATASOURCE_PASSWORD:reservation}
+    username: ${SPRING_DATASOURCE_USERNAME:inventory}
+    password: ${SPRING_DATASOURCE_PASSWORD:inventory}
     hikari:
       pool-name: inventory-pool
       maximum-pool-size: 10
