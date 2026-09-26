@@ -221,23 +221,6 @@ docker compose down          # keep database volumes
 docker compose down -v       # drop database volumes (fresh next start)
 ```
 
-## Running without Docker
-
-Each service can be run directly with:
-
-```bash
-./mvnw spring-boot:run
-```
-
-Run it from the relevant module directory.
-
-You'll need:
-
-- a local JDK 21
-- a running PostgreSQL instance
-
-The datasource URL, username, and password default to environment-variable-overridable values in `application.yaml`.
-
 ## Testing
 
 `OversellConcurrencyTest` runs against a real PostgreSQL instance via Testcontainers (not mocked), using `ExecutorService` + `CountDownLatch` to force maximum simultaneous contention, and `@RepeatedTest(10)` to make a passing result statistically meaningful rather than a lucky single run.
