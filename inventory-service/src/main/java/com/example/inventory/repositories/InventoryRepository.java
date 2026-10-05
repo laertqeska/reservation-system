@@ -19,4 +19,13 @@ public interface InventoryRepository extends JpaRepository<InventoryItem,Long> {
             AND available >= :qty
     """,nativeQuery = true)
     int tryReserve(@Param("id") long id,@Param("qty") int qty);
+
+    @Modifying(clearAutomatically = true,flushAutomatically = true)
+    @Query(value = """
+        UPDATE inventory_items
+            SET available = available + :qty,
+                    updated_at = now()
+        WHERE id = :id
+    """,nativeQuery = true)
+    int tryRelease(@Param("id") long id,@Param("qty") int qty);
 }

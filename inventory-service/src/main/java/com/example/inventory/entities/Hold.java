@@ -34,6 +34,9 @@ public class Hold {
     @Column(name = "created_at",nullable = false,updatable = false)
     private Instant createdAt;
 
+    @Column(name = "updated_at",nullable = false)
+    private Instant updatedAt;
+
     protected Hold(){}
 
     public Hold(Long itemId,int qty,String holdKey,Instant createdAt){
@@ -75,4 +78,6 @@ public class Hold {
     public Instant getCreatedAt() {
         return createdAt;
     }
+
+    public Instant getUpdatedAt() { return updatedAt; }
 }

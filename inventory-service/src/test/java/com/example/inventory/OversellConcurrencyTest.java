@@ -1,7 +1,6 @@
 package com.example.inventory;
 
 import com.example.inventory.dto.CreateHoldRequest;
-import com.example.inventory.dto.CreateHoldResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.springframework.beans.factory.annotation.Autowired;

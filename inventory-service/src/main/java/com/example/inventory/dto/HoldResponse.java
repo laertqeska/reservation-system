@@ -4,7 +4,7 @@ import com.example.inventory.valueTypes.HoldStatus;
 
 import java.time.Instant;
 
-public record CreateHoldResponse(
+public record HoldResponse(
         Long id,
         Long itemId,
         int qty,

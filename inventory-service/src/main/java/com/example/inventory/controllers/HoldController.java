@@ -1,7 +1,7 @@
 package com.example.inventory.controllers;
 
 import com.example.inventory.dto.CreateHoldRequest;
-import com.example.inventory.dto.CreateHoldResponse;
+import com.example.inventory.dto.HoldResponse;
 import com.example.inventory.services.HoldService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -18,8 +18,20 @@ public class HoldController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateHoldResponse> createHold(@RequestBody @Valid CreateHoldRequest request){
-        CreateHoldResponse response = holdService.createHold(request);
+    public ResponseEntity<HoldResponse> createHold(@RequestBody @Valid CreateHoldRequest request){
+        HoldResponse response = holdService.createHold(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{id}/commit")
+    public ResponseEntity<HoldResponse> commitHold(@PathVariable Long id){
+        HoldResponse response = holdService.commitHold(id);
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/release")
+    public ResponseEntity<HoldResponse> releaseHold(@PathVariable Long id){
+        HoldResponse response = holdService.releaseHold(id);
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 }

@@ -1,8 +1,6 @@
 package com.example.inventory.web;
 
-import com.example.inventory.exceptions.InsufficientInventoryException;
-import com.example.inventory.exceptions.InventoryItemAlreadyExistsException;
-import com.example.inventory.exceptions.NotFoundException;
+import com.example.inventory.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,6 +38,39 @@ public class ApiExceptionHandler {
         problem.setTitle("Insufficient inventory");
         problem.setProperty("code","INSUFFICIENT_INVENTORY");
 
+        return problem;
+    }
+
+    @ExceptionHandler(HoldHasBeenReleasedException.class)
+    public ProblemDetail handleHoldReleased(HoldHasBeenReleasedException ex){
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT,
+                ex.getMessage()
+        );
+        problem.setTitle("Hold is released");
+        problem.setProperty("code","HOLD_IS_RELEASED");
+        return problem;
+    }
+
+    @ExceptionHandler(HoldHasBeenExpiredException.class)
+    public ProblemDetail handleHoldExpired(HoldHasBeenExpiredException ex){
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT,
+                ex.getMessage()
+        );
+        problem.setTitle("Hold is expired");
+        problem.setProperty("code","HOLD_IS_EXPIRED");
+        return problem;
+    }
+
+    @ExceptionHandler(HoldIsCommittedException.class)
+    public ProblemDetail handleHoldIsCommitted(HoldIsCommittedException ex){
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT,
+                ex.getMessage()
+        );
+        problem.setTitle("Hold is commited");
+        problem.setProperty("code","HOLD_IS_COMMITTED");
         return problem;
     }
 }
