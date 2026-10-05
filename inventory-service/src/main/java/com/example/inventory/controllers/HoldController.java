@@ -34,4 +34,10 @@ public class HoldController {
         HoldResponse response = holdService.releaseHold(id);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<HoldResponse> getHold(@PathVariable Long id){
+        HoldResponse response = holdService.getHold(id);
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
 }

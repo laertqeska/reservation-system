@@ -100,5 +100,11 @@ public class HoldService {
         return toResponse(hold);
     }
 
+    public HoldResponse getHold(Long id){
+        Objects.requireNonNull(id,"Id cannot be null");
+        Hold hold = holdRepository.findById(id).orElseThrow(()->new NotFoundException("Hold not found for id: " + id));
+        return toResponse(hold);
+    }
+
 
 }
