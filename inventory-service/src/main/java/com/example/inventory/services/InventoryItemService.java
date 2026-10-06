@@ -1,12 +1,12 @@
 package com.example.inventory.services;
 
-import com.example.inventory.dto.CreateInventoryItemRequest;
-import com.example.inventory.dto.InventoryItemDetailsResponse;
-import com.example.inventory.dto.ItemResponse;
+import com.example.inventory.dto.*;
 import com.example.inventory.entities.InventoryItem;
 import com.example.inventory.exceptions.InventoryItemAlreadyExistsException;
 import com.example.inventory.exceptions.NotFoundException;
 import com.example.inventory.repositories.InventoryRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
@@ -57,6 +57,17 @@ public class InventoryItemService {
                 inventoryItem.getTotal(),
                 inventoryItem.getAvailable(),
                 inventoryItem.getCreatedAt()
+        );
+    }
+
+    public PaginatedItemResponse getPaginatedItems(Pageable pageable){
+        Page<ItemResponse> items = inventoryRepository.getPaginatedItems(pageable);
+        return new PaginatedItemResponse(
+                items.getContent(),
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                items.getTotalElements(),
+                items.getTotalPages()
         );
     }
 }

@@ -1,6 +1,10 @@
 package com.example.inventory.repositories;
 
+import com.example.inventory.dto.InventoryItemModel;
+import com.example.inventory.dto.ItemResponse;
 import com.example.inventory.entities.InventoryItem;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -28,4 +32,10 @@ public interface InventoryRepository extends JpaRepository<InventoryItem,Long> {
         WHERE id = :id
     """,nativeQuery = true)
     int tryRelease(@Param("id") long id,@Param("qty") int qty);
+
+
+
+    @Query("SELECT new com.example.inventory.dto.ItemResponse(item.id,item.sku,item.total,item.available,item.createdAt) " +
+            "FROM InventoryItem item ")
+    Page<ItemResponse> getPaginatedItems(Pageable pageable);
 }
