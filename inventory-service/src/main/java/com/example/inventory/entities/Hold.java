@@ -49,6 +49,7 @@ public class Hold {
         this.status = HoldStatus.HELD;
         this.createdAt = createdAt;
         this.expiresAt = createdAt.plus(Duration.ofMinutes(10));
+        this.updatedAt = createdAt;
     }
 
     public Long getId() {

@@ -67,13 +67,12 @@ public class HoldService {
         int affected = holdRepository.tryCommit(id);
         if(affected == 0){
             hold = holdRepository.findById(id).orElseThrow(() -> new NotFoundException("Hold not found for id: " + id));
-            switch(hold.getStatus()){
-                case HoldStatus.COMMITTED -> {
-                    return toResponse(hold);
-                }
-                case HoldStatus.RELEASED -> throw new HoldHasBeenReleasedException("Hold is released");
-                case HoldStatus.EXPIRED -> throw new HoldHasBeenExpiredException("Hold is expired");
-            }
+            return switch(hold.getStatus()){
+                case COMMITTED -> toResponse(hold);
+                case RELEASED -> throw new HoldHasBeenReleasedException("Hold is released");
+                case EXPIRED -> throw new HoldHasBeenExpiredException("Hold is expired");
+                case HELD -> throw new IllegalStateException("tryCommit affected 0 rows");
+            };
         }
         hold = holdRepository.findById(id).orElseThrow(() -> new NotFoundException("Hold not found for id: " + id));
         return toResponse(hold);
